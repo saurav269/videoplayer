@@ -9,11 +9,13 @@ import NotificationIcon from '../../assets/notification.png'
 import ProfileIcon from '../../assets/jack.png'
 
 
-const Navbar = () => {
+const Navbar = ({setSideBar}) => {
   return (
     <nav className='flex-div'>
         <div className='nav-left flex-div'>
-            <img src={MenuIcon} alt='' className='menu-icon'/>
+            <img src={MenuIcon} alt=''
+            onClick={() => setSideBar(prev=> prev===false?true:false)}
+             className='menu-icon'/>
             <img src={MenuLogo} alt='' style={{ height: "40px"}} className='logo' />
         </div>
         <div className='nav-middle flex-div'>
