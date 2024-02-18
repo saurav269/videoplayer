@@ -9,12 +9,14 @@ import jack from '../../assets/jack.png'
 import moment from 'moment'
 import user_profile from '../../assets/user_profile.jpg'
 import { API_KEY, value_converter } from './../../data';
+import { useParams } from 'react-router-dom'
 
-const PlayVideo = ({videoId}) => {
+const PlayVideo = () => {
   const[apiData, setApiData] = useState(null);
   const[channelData, setChannelData] = useState(null);
   const[commentData, setCommentData] = useState([]);
 
+const {videoId} = useParams();
 
   const fetchVideoData=async()=>{
     //Fetching Videos Data
@@ -29,14 +31,14 @@ const PlayVideo = ({videoId}) => {
     
 
     //FETCHING COMMENT DATA
-    const comment_url = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&videoId=${videoId}&key=${API_KEY}`;
+    const comment_url = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&maxResults=90&videoId=${videoId}&key=${API_KEY}`;
     await fetch(comment_url).then((res) => res.json()).then(data => setCommentData(data.items))
   }
 
 
   useEffect(()=>{
     fetchVideoData();
-  },[])
+  },[videoId])
 
   useEffect(() =>{
     fetchOtherData()
@@ -45,6 +47,7 @@ const PlayVideo = ({videoId}) => {
     <div className="play-video">
       {/* <video src={video1} controls autoPlay muted /> */}
       <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1`} title="Create YouTube Clone Using React JS | Build Complete Website Like YouTube In React JS 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      
       <h3>{apiData ? apiData.snippet.title : "Title here"}</h3>
       <div className="play-video-info">
         <p>{apiData ? value_converter(apiData.statistics.viewCount) : "16K"}  views &bull; {moment(apiData ? apiData.snippet.publishedAt : "2days").fromNow()}</p>
@@ -85,15 +88,14 @@ const PlayVideo = ({videoId}) => {
                   <img src={ele.snippet.topLevelComment.snippet.authorProfileImageUrl} alt="" />
                   <div>
                     <h3>
-                      Jack Nicon<span> 1 day ago</span>
+                      {ele.snippet.topLevelComment.snippet.authorDisplayName}<span> 1 day ago</span>
                     </h3>
                     <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam,
-                      magnam.
+                      {ele.snippet.topLevelComment.snippet.textDisplay}
                     </p>
                     <div className="comment-action">
                         <img src={like} alt='' />
-                        <span>244</span>
+                        <span>{value_converter(ele.snippet.topLevelComment.snippet.likeCount)}</span>
                         <img src={dislike} alt='' />
                     </div>
                   </div>
